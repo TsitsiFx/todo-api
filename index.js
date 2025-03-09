@@ -2,9 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 dotenv.config();
 import connectToDB from "../todo-app/db.js";
-import { Todo, todoSchema } from "./models/todo.js";
+import { Todo } from "./models/todo.js";
 const app = express();
-const port = process.env.port || 3001;
+const port = process.env.port || 3000;
 
 // addMiddleware
 app.use(express.json());
@@ -12,6 +12,8 @@ app.use(express.json());
 connectToDB();
 
 // TODO APIs
+
+// GET ALL TODO
 app.get("/todos", async (req, res) => {
   try {
     const result = await Todo.find();
@@ -29,6 +31,7 @@ app.get("/todos", async (req, res) => {
   }
 });
 
+// CREATE TODO
 app.post("/create-todo", async (req, res) => {
   const todoDetails = req.body;
   try {
@@ -47,8 +50,10 @@ app.post("/create-todo", async (req, res) => {
   }
 });
 
+//  GET BY ID
+
 app.get("/:id", async (req, res) => {
-  const todoId = req.params.todoId;
+  const todoId = req.params.id;
   try {
     const result = await Todo.findById(todoId);
     res.send({
@@ -60,13 +65,16 @@ app.get("/:id", async (req, res) => {
     res.send({
       success: false,
       message: "Todo id not retrieved",
-      data: result,
+      // data: result,
     });
   }
 });
 
+
+// UPDATE TODO
+
 app.patch("/:id", async (req, res) => {
-  const todoId = req.params.todoId;
+  const todoId = req.params.id;
   const updatedTodo = req.body;
   try {
     const result = await Todo.findByIdAndUpdate(todoId, updatedTodo, {
@@ -86,6 +94,19 @@ app.patch("/:id", async (req, res) => {
   }
 });
 
+// DELETE TODO
+app.delete("/delete/:id", async (req, res) => {
+  
+    await Todo.findByIdAndDelete(req.params.id);
+    res.send("deleted")
+  } 
+  
+)
+
+
+
 app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
 });
+
+

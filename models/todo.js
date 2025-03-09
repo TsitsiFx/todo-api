@@ -6,4 +6,4 @@ export const todoSchema = new Schema({
   deadLine: { type: String, required: true },
 });
 
-export const Todo = mongoose.models.Todo || new model("Todo", todoSchema);
+export const Todo = new model("todo", todoSchema);
